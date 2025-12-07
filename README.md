@@ -21,17 +21,15 @@ This implementation supports CPU, CUDA, and MPS, as well as ROCm if PyTorch is c
 
 ## Installation
 
+First, install `uv`
+
 ```bash
-pip install utmos
+uv build
 ```
 
 ## Usage
 
-### CLI (Command Line Interface)
-
-```bash
-utmos audio.wav
-```
+See `scripts/`
 
 ### Python API
 
