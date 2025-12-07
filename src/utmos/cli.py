@@ -9,7 +9,7 @@ class ChangeSampleRate(nn.Module):
         self.output_rate = output_rate
         self.input_rate = input_rate
 
-    def forward(self, wav: torch.tensor) -> torch.tensor:
+    def forward(self, wav: torch.Tensor) -> torch.Tensor:
         # Only accepts 1-channel waveform input
         wav = wav.view(wav.size(0), -1)
         new_length = wav.size(-1) * self.output_rate // self.input_rate

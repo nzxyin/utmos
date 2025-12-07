@@ -3,14 +3,22 @@ import torch
 import torch.nn as nn
 from cached_path import cached_path
 from .lightning_module import *
-import click
+import torch
+from omegaconf.dictconfig import DictConfig
+from omegaconf.base import ContainerMetadata, Metadata
+from omegaconf.nodes import AnyNode
+from omegaconf.listconfig import ListConfig
+from typing import Any
+from collections import defaultdict
+
+# import click
 class ChangeSampleRate(nn.Module):
     def __init__(self, input_rate: int, output_rate: int):
         super().__init__()
         self.output_rate = output_rate
         self.input_rate = input_rate
 
-    def forward(self, wav: torch.tensor) -> torch.tensor:
+    def forward(self, wav: torch.Tensor) -> torch.Tensor:
         # Only accepts 1-channel waveform input
         wav = wav.view(wav.size(0), -1)
         new_length = wav.size(-1) * self.output_rate // self.input_rate
@@ -26,7 +34,19 @@ class Score:
            device = 'cuda'
         if torch.backends.mps.is_available():
            device = 'mps'
-        self.model = BaselineLightningModule.load_from_checkpoint(cached_path('hf://mosmodels/utmos/model.ckpt')).eval().to(device)
+        with torch.serialization.safe_globals([
+            DictConfig, 
+            ContainerMetadata, 
+            Metadata, 
+            AnyNode, 
+            ListConfig,
+            Any, 
+            defaultdict, 
+            dict,
+            list,
+            int,
+        ]):
+            self.model = BaselineLightningModule.load_from_checkpoint(cached_path('hf://mosmodels/utmos/model.ckpt')).eval().to(device)
     def calculate_wav_file(self, file):
         wav, sr = torchaudio.load(file)
         return self.calculate_wav(wav, sr)

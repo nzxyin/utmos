@@ -24,6 +24,10 @@ This implementation supports CPU, CUDA, and MPS, as well as ROCm if PyTorch is c
 First, install `uv`
 
 ```bash
+git clone https://github.com/nzxyin/utmos.git
+cd utmos
+uv venv --python=3.10 # Fairseq is broken py>=3.11
+source .venv/bin/activate
 uv build
 ```
 
